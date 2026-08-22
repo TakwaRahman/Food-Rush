@@ -1,0 +1,10 @@
+@plugin "daisyui" {
+    themes: light --default
+}
+
+@theme {
+    --color-primary: #f97316;
+    --color-primary-dark: #ea580c;
+}
+
+@import "tailwindcss";
