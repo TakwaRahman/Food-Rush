@@ -3,6 +3,7 @@ import PopularCategories from "./PopularCategories/PopularCategories";
 import PopularFoods from "./PopularFoods/PopularFoods";
 import PopularResturants from "./PopularResturants/PopularResturants";
 import SpecialOffers from "./SpecialOffers/SpecialOffers";
+import WhyChooseFoodRush from "./WhyChooseFoodRush/WhyChooseFoodRush";
 
 
 const Home = () => {
@@ -14,6 +15,7 @@ const Home = () => {
                 <PopularResturants></PopularResturants>
                 <PopularFoods></PopularFoods>
                 <SpecialOffers></SpecialOffers>
+                <WhyChooseFoodRush></WhyChooseFoodRush>
             </div>
         </div>
     );
