@@ -84,9 +84,10 @@ const Footer = () => {
                         <Link className="link link-hover flex items-center gap-2"><MdEmail className="text-primary" />
 
                             srttr4@gmail.com</Link>
-                        <p className="flex items-center gap-2"><MdOutlineWatchLater className="text-primary" />
+                        <div className="flex items-center gap-2"><MdOutlineWatchLater className="text-primary" />
                             <p>9:00 AM - 11:00 PM</p>
-                            <p> (Everyday)</p></p>
+                            <p> (Everyday)</p>
+                        </div>
 
                     </div>
                 </nav>
