@@ -7,7 +7,7 @@ import { Link } from "react-router";
 
 const Footer = () => {
     return (
-        <div className="mt-20">
+        <div className="">
             <footer className="footer sm:footer-horizontal text-white bg-black p-10">
                 <aside>
                     <h1 className="text-5xl font-bold italic">Food<span className="text-primary">Rush</span></h1>

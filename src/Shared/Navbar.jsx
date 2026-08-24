@@ -13,6 +13,8 @@ const Navbar = () => {
         <li ><NavLink to='/resturants' className={({ isActive }) => `font-semibold ${isActive ? 'text-orange-500' : 'text-black hover:text-orange-500'}`}>About Us</NavLink></li>
         <li ><NavLink to='/resturants' className={({ isActive }) => `font-semibold ${isActive ? 'text-orange-500' : 'text-black hover:text-orange-500'}`}>Contact</NavLink></li>
         <li ><NavLink to='/resturants' className={({ isActive }) => `font-semibold ${isActive ? 'text-orange-500' : 'text-black hover:text-orange-500'}`}>Profile</NavLink></li>
+        <li ><NavLink to='/resturants' className={({ isActive }) => `font-semibold ${isActive ? 'text-orange-500' : 'text-black hover:text-orange-500'}`}>Dashboard</NavLink></li>
+        <li ><NavLink to='/add-food' className={({ isActive }) => `font-semibold ${isActive ? 'text-orange-500' : 'text-black hover:text-orange-500'}`}>Add Food</NavLink></li>
 
 
 
