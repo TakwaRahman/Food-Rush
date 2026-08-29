@@ -2,6 +2,10 @@ import { createBrowserRouter } from "react-router";
 import RootLayout from "../Layout/RootLayout";
 import Home from "../Pages/Home/Home/Home";
 import AddFood from "../Pages/Home/AddFood/AddFood";
+import AuthLayout from "../Layout/AuthLayout";
+import Login from "../Pages/Auth/Login";
+import Register from "../Pages/Auth/Register";
+import FoodDetails from "../Pages/FoodDetails/FoodDetails";
 
 export const router = createBrowserRouter([
     {
@@ -13,9 +17,27 @@ export const router = createBrowserRouter([
                 Component: Home
             },
             {
-                path:'add-food',
+                path: 'add-food',
                 Component: AddFood
+            },
+            {
+                path: 'foods/:id',
+                Component: FoodDetails
             }
         ]
     },
+    {
+        path: '/',
+        Component: AuthLayout,
+        children: [
+            {
+                path: 'login',
+                Component: Login
+            },
+            {
+                path: 'register',
+                Component: Register
+            }
+        ]
+    }
 ]);

@@ -1,6 +1,71 @@
+import axios from "axios";
+import { useForm } from "react-hook-form";
 import { FaCloudUploadAlt } from "react-icons/fa";
+import { useAxiosSecure } from "../../../Hooks/useAxiosSecure";
+import { useState } from "react";
+import Swal from "sweetalert2";
 
 const AddFood = () => {
+
+    const { register, handleSubmit, control, formState: { errors } } = useForm();
+
+    const [imagePreview, setImagePreview] = useState(null);
+
+
+    const axiosSecure = useAxiosSecure();
+
+    const { onChange: photoOnChange, ...photoRegister } = register("photo", { required: true });
+
+
+    const handleAddFood = (data) => {
+        const foodImg = data.photo?.[0];
+
+        const formData = new FormData();
+
+        formData.append('image', foodImg);
+
+        const image_API_URL = `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_image_host}`
+
+        axios.post(image_API_URL, formData)
+            .then(res => {
+                console.log('image uploaded', res.data)
+
+                Swal.fire({
+                    position: "top-end",
+                    icon: "success",
+                    title: "Your food added",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+
+                const foodInfo = {
+                    name: data.FoodName,
+                    foodPhoto: res.data.data.display_url,
+                    category: data.foodCategory,
+                    price: data.foodPrice,
+                    preparationTime: data.time,
+                    foodType: data.foodType,
+                    availability: data.availability,
+                    description: data.description
+                }
+
+
+                axiosSecure.post('/foods', foodInfo)
+                    .then(res => {
+                        if (res.data.insertedId) {
+                            console.log('Your Product created in the data')
+                        }
+
+                    })
+            })
+            .catch(err => {
+                console.log("Message:", err.message);
+                console.log("ImgBB Error:", err.response?.data?.error);
+                console.log("ImgBB Error Message:", err.response?.data?.error?.message);
+                console.log("ImgBB Full Data:", err.response?.data);
+            })
+    }
+
     return (
         <div className="min-h-screen bg-base-200 p-4 md:p-6 lg:p-8">
 
@@ -18,7 +83,7 @@ const AddFood = () => {
             {/* Main Form */}
             <div className="bg-white rounded-2xl shadow-sm p-5 md:p-8">
 
-                <form>
+                <form onSubmit={handleSubmit(handleAddFood)}>
 
                     {/* Food Image */}
                     <div className="mb-8">
@@ -28,11 +93,22 @@ const AddFood = () => {
 
                         <div className="border-2 border-dashed border-gray-300 rounded-2xl p-6 md:p-10 text-center hover:border-primary transition">
 
+
+
                             <div className="flex justify-center mb-4">
-                                <div className="w-16 h-16 rounded-full bg-orange-100 flex items-center justify-center">
-                                    <FaCloudUploadAlt className="text-3xl text-primary" />
-                                </div>
+                                {imagePreview ? (
+                                    <img
+                                        src={imagePreview}
+                                        alt="Food Preview"
+                                        className="w-40 h-40 object-cover rounded-2xl shadow-md"
+                                    />
+                                ) : (
+                                    <div className="w-16 h-16 rounded-full bg-orange-100 flex items-center justify-center">
+                                        <FaCloudUploadAlt className="text-3xl text-primary" />
+                                    </div>
+                                )}
                             </div>
+
 
                             <h3 className="font-semibold text-gray-700">
                                 Upload Food Image
@@ -51,10 +127,20 @@ const AddFood = () => {
 
                             <input
                                 id="foodImage"
+                                {...photoRegister}
                                 type="file"
                                 accept="image/png,image/jpeg"
                                 className="hidden"
+                                onChange={(e) => {
+                                    photoOnChange(e)
+                                    const file = e.target.files[0]
+
+                                    if (file) {
+                                        setImagePreview(URL.createObjectURL(file));
+                                    }
+                                }}
                             />
+                            {errors.photo?.type === 'required' && <p className="text-red-500 mt-5">Food image is required</p>}
                         </div>
                     </div>
 
@@ -76,10 +162,12 @@ const AddFood = () => {
                                 </label>
 
                                 <input
+                                    {...register("FoodName", { required: true })}
                                     type="text"
                                     placeholder="e.g. Classic Beef Burger"
                                     className="input input-bordered w-full rounded-xl"
                                 />
+                                {errors.FoodName?.type === 'required'&&<p className="text-red-500">Name is required</p>}
                             </div>
 
                             {/* Category */}
@@ -90,7 +178,7 @@ const AddFood = () => {
                                     </span>
                                 </label>
 
-                                <select className="select select-bordered w-full rounded-xl">
+                                <select className="select select-bordered w-full rounded-xl" {...register('foodCategory', { required: true })}>
                                     <option value="">
                                         Select Category
                                     </option>
@@ -102,6 +190,8 @@ const AddFood = () => {
                                     <option>Drinks</option>
                                     <option>Dessert</option>
                                 </select>
+
+                                {errors.foodCategory?.type === 'required' && <p className="text-red-500">Category is required</p>}
                             </div>
 
                             {/* Price */}
@@ -114,9 +204,11 @@ const AddFood = () => {
 
                                 <input
                                     type="number"
+                                    {...register('foodPrice', { required: true })}
                                     placeholder="e.g. 250"
                                     className="input input-bordered w-full rounded-xl"
                                 />
+                                {errors.foodPrice?.type === 'required' && <p className="text-red-500">Price is required</p>}
                             </div>
 
                             {/* Preparation Time */}
@@ -127,7 +219,7 @@ const AddFood = () => {
                                     </span>
                                 </label>
 
-                                <select className="select select-bordered w-full rounded-xl">
+                                <select {...register('time', { required: true })} className="select select-bordered w-full rounded-xl">
                                     <option value="">
                                         Select Time
                                     </option>
@@ -138,6 +230,8 @@ const AddFood = () => {
                                     <option>45 Minutes</option>
                                     <option>60 Minutes</option>
                                 </select>
+
+                                {errors.time?.type === 'required' && <p className="text-red-500">Time is required</p>}
                             </div>
 
                             {/* Food Type */}
@@ -148,13 +242,15 @@ const AddFood = () => {
                                     </span>
                                 </label>
 
-                                <select className="select select-bordered w-full rounded-xl">
+                                <select {...register('foodType', { required: true })} className="select select-bordered w-full rounded-xl">
                                     <option value="">
                                         Select Food Type
                                     </option>
                                     <option>Vegetarian</option>
                                     <option>Non-Vegetarian</option>
                                 </select>
+
+                                {errors.foodType?.type === 'required' && <p className="text-red-500">Foodtype is required</p>}
                             </div>
 
                             {/* Availability */}
@@ -165,10 +261,11 @@ const AddFood = () => {
                                     </span>
                                 </label>
 
-                                <select className="select select-bordered w-full rounded-xl">
+                                <select {...register('availability')} className="select select-bordered w-full rounded-xl">
                                     <option>Available</option>
                                     <option>Unavailable</option>
                                 </select>
+
                             </div>
 
                         </div>
@@ -184,56 +281,17 @@ const AddFood = () => {
                         </label>
 
                         <textarea
+                            {...register('description', { required: true })}
                             rows="5"
                             placeholder="Write a short description about this food..."
                             className="textarea textarea-bordered w-full rounded-xl resize-none"
                         ></textarea>
 
+                        {errors.description?.type === 'required' && <p className="text-red-500">Description is required</p>}
+
                     </div>
 
-                    {/* Extra Information */}
-                    <div className="mb-8">
 
-                        <h2 className="text-lg font-semibold text-gray-800 mb-4">
-                            Extra Information
-                        </h2>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-
-                            {/* Spice Level */}
-                            <div>
-                                <label className="label">
-                                    <span className="label-text font-medium">
-                                        Spice Level
-                                    </span>
-                                </label>
-
-                                <select className="select select-bordered w-full rounded-xl">
-                                    <option>Not Spicy</option>
-                                    <option>Mild</option>
-                                    <option>Medium</option>
-                                    <option>Spicy</option>
-                                    <option>Extra Spicy</option>
-                                </select>
-                            </div>
-
-                            {/* Serving Size */}
-                            <div>
-                                <label className="label">
-                                    <span className="label-text font-medium">
-                                        Serving Size
-                                    </span>
-                                </label>
-
-                                <input
-                                    type="text"
-                                    placeholder="e.g. 1 person"
-                                    className="input input-bordered w-full rounded-xl"
-                                />
-                            </div>
-
-                        </div>
-                    </div>
 
                     {/* Buttons */}
                     <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-5 border-t">

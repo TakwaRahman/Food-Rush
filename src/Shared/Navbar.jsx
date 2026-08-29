@@ -1,9 +1,13 @@
 
 import { Link, NavLink } from 'react-router';
-import logoImg from '../assets/ChatGPT Image Aug 18, 2026, 10_57_16 PM.png';
+
 import { FaCartShopping } from 'react-icons/fa6';
+import Logo from '../Component/Logo/Logo';
+import useAuth from '../Hooks/useAuth';
 
 const Navbar = () => {
+
+    const { user, logOut } = useAuth()
 
     const Li = <>
         <li ><NavLink to='/' className={({ isActive }) => `font-semibold ${isActive ? 'text-orange-500' : 'text-black hover:text-orange-500'}`}>Home</NavLink></li>
@@ -22,6 +26,16 @@ const Navbar = () => {
     </>
 
 
+    const handleLogOut = () => {
+        logOut().then(() => {
+            console.log("User logged out");
+        })
+            .catch(err => {
+                console.log(err)
+            })
+    }
+
+
     return (
         <div className=''>
             <div className="navbar bg-amber-100 shadow-sm lg:px-10">
@@ -36,8 +50,8 @@ const Navbar = () => {
                             {Li}
                         </ul>
                     </div>
-                    <div className='w-50'>
-                        <Link to='/' className=''><img src={logoImg} alt="" /></Link>
+                    <div>
+                        <Logo></Logo>
                     </div>
                 </div>
 
@@ -54,7 +68,10 @@ const Navbar = () => {
                     <div className='m-5'>
                         <FaCartShopping className='size-5 lg:size-7' />
                     </div>
-                    <Link className="btn bg-primary hover:bg-primary-dark text-white rounded-xl" to='/login'>Login</Link>
+
+                    <div className="">{
+                        user ? <button className='btn bg-primary hover:bg-primary-dark text-white rounded-xl' onClick={handleLogOut}>Log Out</button> : <Link className='btn bg-primary hover:bg-primary-dark text-white rounded-xl' to='/login'>Log In</Link>
+                    }</div>
                 </div>
             </div>
         </div>
