@@ -4,12 +4,17 @@ import { FaCloudUploadAlt } from "react-icons/fa";
 import { useAxiosSecure } from "../../../Hooks/useAxiosSecure";
 import { useState } from "react";
 import Swal from "sweetalert2";
+import { useLocation, useNavigate } from "react-router";
 
 const AddFood = () => {
 
     const { register, handleSubmit, control, formState: { errors } } = useForm();
 
     const [imagePreview, setImagePreview] = useState(null);
+
+    const location = useLocation();
+
+    const navigate = useNavigate();
 
 
     const axiosSecure = useAxiosSecure();
@@ -30,13 +35,9 @@ const AddFood = () => {
             .then(res => {
                 console.log('image uploaded', res.data)
 
-                Swal.fire({
-                    position: "top-end",
-                    icon: "success",
-                    title: "Your food added",
-                    showConfirmButton: false,
-                    timer: 1500
-                });
+
+
+                navigate(location.state || '/')
 
                 const foodInfo = {
                     name: data.FoodName,
@@ -54,6 +55,13 @@ const AddFood = () => {
                     .then(res => {
                         if (res.data.insertedId) {
                             console.log('Your Product created in the data')
+                            Swal.fire({
+                                position: "top-end",
+                                icon: "success",
+                                title: "Your food added",
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
                         }
 
                     })
@@ -167,7 +175,7 @@ const AddFood = () => {
                                     placeholder="e.g. Classic Beef Burger"
                                     className="input input-bordered w-full rounded-xl"
                                 />
-                                {errors.FoodName?.type === 'required'&&<p className="text-red-500">Name is required</p>}
+                                {errors.FoodName?.type === 'required' && <p className="text-red-500">Name is required</p>}
                             </div>
 
                             {/* Category */}

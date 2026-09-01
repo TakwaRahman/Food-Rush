@@ -4,85 +4,23 @@ import burgerImg from '../../../assets/8c27e9da862d35e6835442dc94b055f7.jpg';
 import burgerLogo from '../../../assets/824cfebf20f45a92ab5b897445c8ce2f.jpg';
 
 import ResturantCard from "./ResturantCard";
+import { useAxiosSecure } from "../../../Hooks/useAxiosSecure";
+import { useEffect, useState } from "react";
 
 
 
 const PopularResturants = () => {
 
-    const restaurants = [
-        {
-            id: 1,
-            name: "Burger House",
-            image: burgerImg,
-            logo: burgerLogo,
-            rating: 4.8,
-            cuisine: "Fast Food",
-            specialty: "Burgers",
-            deliveryTime: "20-30 min",
-            location: "Dhanmondi, Dhaka",
-            orderCount: 1250,
-        },
-        {
-            id: 2,
-            name: "Pizza Lover",
-            image: "/restaurants/pizza-lover.jpg",
-            logo: "/restaurants/logos/pizza-lover.png",
-            rating: 4.7,
-            cuisine: "Italian",
-            specialty: "Pizza",
-            deliveryTime: "25-35 min",
-            location: "Banani, Dhaka",
-            orderCount: 1100,
-        },
-        {
-            id: 3,
-            name: "Biryani Express",
-            image: "/restaurants/biryani-express.jpg",
-            logo: "/restaurants/logos/biryani-express.png",
-            rating: 4.6,
-            cuisine: "Indian",
-            specialty: "Biryani",
-            deliveryTime: "30-40 min",
-            location: "Uttara, Dhaka",
-            orderCount: 980,
-        },
-        {
-            id: 4,
-            name: "Chicken Crunch",
-            image: "/restaurants/chicken-crunch.jpg",
-            logo: "/restaurants/logos/chicken-crunch.png",
-            rating: 4.7,
-            cuisine: "Fast Food",
-            specialty: "Fried Chicken",
-            deliveryTime: "20-30 min",
-            location: "Mirpur, Dhaka",
-            orderCount: 920,
-        },
-        {
-            id: 5,
-            name: "Pasta Point",
-            image: "/restaurants/pasta-point.jpg",
-            logo: "/restaurants/logos/pasta-point.png",
-            rating: 4.5,
-            cuisine: "Italian",
-            specialty: "Pasta",
-            deliveryTime: "25-35 min",
-            location: "Gulshan, Dhaka",
-            orderCount: 760,
-        },
-        {
-            id: 6,
-            name: "Sweet Tooth",
-            image: "/restaurants/sweet-tooth.jpg",
-            logo: "/restaurants/logos/sweet-tooth.png",
-            rating: 4.6,
-            cuisine: "Desserts",
-            specialty: "Cakes",
-            deliveryTime: "15-25 min",
-            location: "Dhanmondi, Dhaka",
-            orderCount: 680,
-        },
-    ];
+    const [restaurants, setRestaurants] = useState([])
+
+    const axiosSecure = useAxiosSecure();
+
+    useEffect(() => {
+        axiosSecure.get('/restaurants').then(res => {
+            setRestaurants(res.data)
+            console.log(res.data)
+        })
+    }, [])
 
 
 

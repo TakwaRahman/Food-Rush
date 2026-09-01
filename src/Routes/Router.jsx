@@ -6,6 +6,7 @@ import AuthLayout from "../Layout/AuthLayout";
 import Login from "../Pages/Auth/Login";
 import Register from "../Pages/Auth/Register";
 import FoodDetails from "../Pages/FoodDetails/FoodDetails";
+import AddRestaurents from "../Pages/Home/AddRestaurents/AddRestaurents";
 
 export const router = createBrowserRouter([
     {
@@ -19,6 +20,10 @@ export const router = createBrowserRouter([
             {
                 path: 'add-food',
                 Component: AddFood
+            },
+            {
+                path: 'add-restaurents',
+                Component: AddRestaurents
             },
             {
                 path: 'foods/:id',

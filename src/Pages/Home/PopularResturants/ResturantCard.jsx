@@ -9,7 +9,7 @@ const ResturantCard = ({ resturant }) => {
             {/* Restaurant Cover Image */}
             <figure className="relative h-52 overflow-hidden">
                 <img
-                    src={resturant.image}
+                    src={resturant.coverImage}
                     
                     className="w-full h-full object-cover"
                 />
@@ -24,14 +24,7 @@ const ResturantCard = ({ resturant }) => {
             {/* Card Body */}
             <div className="card-body relative">
 
-                {/* Restaurant Logo */}
-                <div className="absolute -top-10 left-5 w-20 h-20">
-                    <img
-                        src={resturant.logo}
-                        
-                        className="w-full h-full object-cover rounded-full border-4 border-white shadow-md"
-                    />
-                </div>
+               
 
                 {/* Restaurant Information */}
                 <div className="pt-8">
