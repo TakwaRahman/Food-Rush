@@ -67,7 +67,7 @@ const Navbar = () => {
 
                 <div className="navbar-end">
                     <div className='m-5'>
-                        <FaCartShopping className='size-5 lg:size-7' />
+                        <Link to='/cart'><FaCartShopping className='size-5 lg:size-7' /></Link>
                     </div>
 
                     <div className="">{

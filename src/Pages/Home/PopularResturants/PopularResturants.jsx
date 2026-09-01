@@ -55,7 +55,7 @@ const PopularResturants = () => {
             <div>
                 <div className="grid grid-cols-1 lg:grid-cols-3 place-items-center gap-10">
                     {
-                        restaurants.map(resturant => <ResturantCard key={resturant.id} resturant={resturant}></ResturantCard>)
+                        restaurants.slice(0, 3).map(resturant => <ResturantCard key={resturant.id} resturant={resturant}></ResturantCard>)
                     }
                 </div>
             </div>

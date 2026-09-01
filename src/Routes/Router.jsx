@@ -7,6 +7,7 @@ import Login from "../Pages/Auth/Login";
 import Register from "../Pages/Auth/Register";
 import FoodDetails from "../Pages/FoodDetails/FoodDetails";
 import AddRestaurents from "../Pages/Home/AddRestaurents/AddRestaurents";
+import Cart from "../Pages/Home/Cart/Cart";
 
 export const router = createBrowserRouter([
     {
@@ -28,6 +29,10 @@ export const router = createBrowserRouter([
             {
                 path: 'foods/:id',
                 Component: FoodDetails
+            },
+            {
+                path: 'cart',
+                Component: Cart
             }
         ]
     },

@@ -25,9 +25,10 @@ const PopularFoods = () => {
         { name: "Burger", icon: "🍔" },
         { name: "Pizza", icon: "🍕" },
         { name: "Biryani", icon: "🍛" },
-        { name: "Sushi", icon: "🍣" },
+        { name: "Japanese", icon: "🍣" },
         { name: "Salad", icon: "🥗" },
         { name: "Drinks", icon: "🥤" },
+        { name: "Asian", icon: "🥤" },
     ];
 
 

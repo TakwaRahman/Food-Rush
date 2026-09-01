@@ -197,6 +197,10 @@ const AddFood = () => {
                                     <option>Noodles</option>
                                     <option>Drinks</option>
                                     <option>Dessert</option>
+                                    <option>Japanese</option>
+                                    <option>Asian</option>
+                                    <option>Chinese</option>
+                                    <option>Bangail</option>
                                 </select>
 
                                 {errors.foodCategory?.type === 'required' && <p className="text-red-500">Category is required</p>}
