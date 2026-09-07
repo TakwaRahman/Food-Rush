@@ -2,6 +2,7 @@ import { FaCartShopping, FaStar } from "react-icons/fa6";
 import { Link } from "react-router";
 import { useAxiosSecure } from "../../../Hooks/useAxiosSecure";
 import useAuth from '../../../Hooks/useAuth';
+import Swal from "sweetalert2";
 
 const FoodCard = ({ food }) => {
 
@@ -27,6 +28,23 @@ const FoodCard = ({ food }) => {
         try {
 
             const res = await axiosSecure.post("/cart", cartItem);
+
+            if (res.data.alreadyExists) {
+                Swal.fire({
+                    icon: "warning",
+                    title: "Already in Cart!",
+                    text: "This food is already in your cart.",
+                });
+                return;
+            }
+
+            if (res.data.success) {
+                Swal.fire({
+                    icon: "success",
+                    title: "Added!",
+                    text: "Food added to cart successfully.",
+                });
+            }
 
             console.log(res.data);
 

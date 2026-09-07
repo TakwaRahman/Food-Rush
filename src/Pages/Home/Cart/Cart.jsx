@@ -1,4 +1,4 @@
-
+import { useQuery } from "@tanstack/react-query";
 import {
     FaCartShopping,
     FaTrash,
@@ -11,32 +11,90 @@ import {
     FaStar,
     FaTag
 } from "react-icons/fa6";
+import useAuth from "../../../Hooks/useAuth";
+import { useAxiosSecure } from "../../../Hooks/useAxiosSecure";
+import { useState } from "react";
+import Swal from "sweetalert2";
 
 const Cart = () => {
 
-    // Demo cart data
-    const cartItems = [
-        {
-            id: 1,
-            name: "Classic Beef Burger",
-            restaurant: "Food Palace",
-            price: 8,
-            quantity: 1,
-            image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd"
-        }
-    ];
+    // Each item gets its own quantity: { [itemId]: quantity }
+    const [quantities, setQuantities] = useState({});
 
-    // Calculate subtotal
+    const { user } = useAuth()
+    const axiosSecure = useAxiosSecure()
+
+    const { refetch, data: cartItems = [] } = useQuery({
+        queryKey: ['cart', user?.email],
+        queryFn: async () => {
+            const res = await axiosSecure.get(`/cart?email=${user.email}`)
+            return res.data;
+        }
+    })
+
+    const getQuantity = (id) => quantities[id] || 1;
+
+    const increaseQuantity = (id) => {
+        setQuantities(prev => ({
+            ...prev,
+            [id]: getQuantity(id) + 1
+        }));
+    };
+
+    const decreaseQuantity = (id) => {
+        setQuantities(prev => ({
+            ...prev,
+            [id]: Math.max(getQuantity(id) - 1, 1)
+        }));
+    };
+
+    // Calculate subtotal using each item's own quantity
     const subtotal = cartItems.reduce(
-        (total, item) => total + item.price * item.quantity,
+        (total, item) => total + item.price * getQuantity(item._id),
         0
     );
 
-    const deliveryFee = 3;
-    const discount = 5;
+    const deliveryFee = 5;
+    const discountRate = 0.10; // 10%
+    const discount = subtotal * discountRate;
 
-    const total = subtotal + deliveryFee - discount;
+    const total =
+        cartItems.length > 0
+            ? subtotal + deliveryFee - discount
+            : 0;
 
+    const handleTrashCart = async (id) => {
+        const result = await Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to recover this item!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Yes, delete it!"
+        });
+
+        if (result.isConfirmed) {
+            try {
+                const res = await axiosSecure.delete(`/cart/${id}`);
+
+                if (res.data.deletedCount > 0) {
+                    Swal.fire({
+                        title: "Deleted!",
+                        text: "Cart item has been deleted.",
+                        icon: "success"
+                    });
+                    refetch()
+                }
+            } catch (error) {
+                Swal.fire({
+                    title: "Error!",
+                    text: "Failed to delete cart item.",
+                    icon: "error"
+                });
+            }
+        }
+    };
 
     return (
         <div className="bg-gray-50 min-h-screen py-6 sm:py-10">
@@ -82,105 +140,110 @@ const Cart = () => {
                         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
 
                             {
-                                cartItems.map(item => (
+                                cartItems.map(item => {
+                                    const itemQuantity = getQuantity(item._id);
+                                    const itemTotal = item.price * itemQuantity;
 
-                                    <div
-                                        key={item.id}
-                                        className="p-4 sm:p-6 border-b border-gray-200"
-                                    >
+                                    return (
+                                        <div
+                                            key={item._id}
+                                            className="p-4 sm:p-6 border-b border-gray-200"
+                                        >
 
-                                        {/* ================= FOOD ITEM ================= */}
+                                            {/* ================= FOOD ITEM ================= */}
 
-                                        <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-5">
+                                            <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-5">
 
-                                            {/* Food Image */}
+                                                {/* Food Image */}
 
-                                            <img
-                                                src={item.image}
-                                                alt={item.name}
-                                                className="w-full h-48 sm:w-24 sm:h-24 md:w-28 md:h-28 object-cover rounded-xl"
-                                            />
-
-
-                                            {/* Food Information */}
-
-                                            <div className="flex-1 min-w-0">
-
-                                                <h2 className="text-lg sm:text-xl font-bold truncate">
-
-                                                    {item.name}
-
-                                                </h2>
-
-                                                <p className="text-primary font-medium mt-1">
-
-                                                    {item.restaurant}
-
-                                                </p>
-
-                                                <p className="text-gray-500 mt-1">
-
-                                                    ${item.price.toFixed(2)}
-
-                                                </p>
-
-                                            </div>
+                                                <img
+                                                    src={item.image}
+                                                    alt={item.name}
+                                                    className="w-full h-48 sm:w-24 sm:h-24 md:w-28 md:h-28 object-cover rounded-xl"
+                                                />
 
 
-                                            {/* ================= MOBILE CONTROLS ================= */}
+                                                {/* Food Information */}
 
-                                            <div className="flex items-center justify-between sm:justify-end gap-4 w-full sm:w-auto">
+                                                <div className="flex-1 min-w-0">
 
-                                                {/* Quantity */}
+                                                    <h2 className="text-lg sm:text-xl font-bold truncate">
 
-                                                <div className="flex items-center border border-gray-300 rounded-xl overflow-hidden">
+                                                        {item.name}
 
-                                                    <button
-                                                        className="px-3 py-2 hover:bg-gray-100 active:bg-gray-200"
-                                                    >
-                                                        <FaMinus className="text-sm" />
-                                                    </button>
+                                                    </h2>
 
-                                                    <span className="px-4 font-semibold">
-                                                        {item.quantity}
-                                                    </span>
+                                                    <p className="text-primary font-medium mt-1">
 
-                                                    <button
-                                                        className="px-3 py-2 hover:bg-gray-100 active:bg-gray-200"
-                                                    >
-                                                        <FaPlus className="text-sm" />
-                                                    </button>
+                                                        {item.restaurant}
+
+                                                    </p>
+
+                                                    <p className="text-gray-500 mt-1">
+
+                                                        ${Number(item.price).toFixed(2)}
+
+                                                    </p>
 
                                                 </div>
 
 
-                                                {/* Item Total */}
+                                                {/* ================= MOBILE CONTROLS ================= */}
 
-                                                <div className="text-lg sm:text-xl font-bold text-primary min-w-[70px] text-right">
+                                                <div className="flex items-center justify-between sm:justify-end gap-4 w-full sm:w-auto">
 
-                                                    $
-                                                    {(item.price * item.quantity).toFixed(2)}
+                                                    {/* Quantity */}
+
+                                                    <div className="flex items-center border border-gray-300 rounded-xl overflow-hidden">
+
+                                                        <button
+                                                            onClick={() => decreaseQuantity(item._id)}
+                                                            className="px-3 py-2 hover:bg-gray-100 active:bg-gray-200"
+                                                        >
+                                                            <FaMinus className="text-sm" />
+                                                        </button>
+
+                                                        <span className="px-4 font-semibold">
+                                                            {itemQuantity}
+                                                        </span>
+
+                                                        <button
+                                                            onClick={() => increaseQuantity(item._id)}
+                                                            className="px-3 py-2 hover:bg-gray-100 active:bg-gray-200"
+                                                        >
+                                                            <FaPlus className="text-sm" />
+                                                        </button>
+
+                                                    </div>
+
+
+                                                    {/* Item Total */}
+
+                                                    <div className="text-lg sm:text-xl font-bold text-primary min-w-[70px] text-right">
+
+                                                        Tk {itemTotal.toFixed(2)}
+
+                                                    </div>
+
+
+                                                    {/* Delete */}
+
+                                                    <button
+                                                        onClick={() => handleTrashCart(item._id)}
+                                                        className="text-gray-400 hover:text-red-500 transition text-lg sm:text-xl"
+                                                    >
+
+                                                        <FaTrash />
+
+                                                    </button>
 
                                                 </div>
-
-
-                                                {/* Delete */}
-
-                                                <button
-                                                    className="text-gray-400 hover:text-red-500 transition text-lg sm:text-xl"
-                                                >
-
-                                                    <FaTrash />
-
-                                                </button>
 
                                             </div>
 
                                         </div>
-
-                                    </div>
-
-                                ))
+                                    );
+                                })
                             }
 
 
@@ -287,7 +350,7 @@ const Cart = () => {
 
                                 <span className="font-semibold whitespace-nowrap">
 
-                                    ${subtotal.toFixed(2)}
+                                    Tk {subtotal.toFixed(2)}
 
                                 </span>
 
@@ -306,7 +369,7 @@ const Cart = () => {
 
                                 <span className="font-semibold">
 
-                                    ${deliveryFee.toFixed(2)}
+                                    Tk {deliveryFee.toFixed(2)}
 
                                 </span>
 
@@ -319,13 +382,13 @@ const Cart = () => {
 
                                 <span className="text-gray-600">
 
-                                    Discount
+                                    Discount (10%)
 
                                 </span>
 
                                 <span className="text-green-600 font-semibold">
 
-                                    -${discount.toFixed(2)}
+                                    -Tk {discount.toFixed(2)}
 
                                 </span>
 
@@ -346,7 +409,7 @@ const Cart = () => {
 
                                     <span className="text-2xl font-bold text-primary">
 
-                                        ${total.toFixed(2)}
+                                        Tk {total.toFixed(2)}
 
                                     </span>
 
