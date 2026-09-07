@@ -8,6 +8,7 @@ import Register from "../Pages/Auth/Register";
 import FoodDetails from "../Pages/FoodDetails/FoodDetails";
 import AddRestaurents from "../Pages/Home/AddRestaurents/AddRestaurents";
 import Cart from "../Pages/Home/Cart/Cart";
+import RestaurentsDetails from "../Pages/Home/RestaurentsDetails/RestaurentsDetails";
 
 export const router = createBrowserRouter([
     {
@@ -29,6 +30,10 @@ export const router = createBrowserRouter([
             {
                 path: 'foods/:id',
                 Component: FoodDetails
+            },
+            {
+                path: 'restaurants/:id',
+                Component: RestaurentsDetails
             },
             {
                 path: 'cart',

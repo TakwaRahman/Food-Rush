@@ -1,6 +1,7 @@
 import { FaLocationDot } from "react-icons/fa6";
 import { MdOutlineWatchLater } from "react-icons/md";
 import { FaStar } from "react-icons/fa";
+import { Link } from "react-router";
 
 const ResturantCard = ({ resturant }) => {
     return (
@@ -10,7 +11,7 @@ const ResturantCard = ({ resturant }) => {
             <figure className="relative h-52 overflow-hidden">
                 <img
                     src={resturant.coverImage}
-                    
+
                     className="w-full h-full object-cover"
                 />
 
@@ -24,7 +25,7 @@ const ResturantCard = ({ resturant }) => {
             {/* Card Body */}
             <div className="card-body relative">
 
-               
+
 
                 {/* Restaurant Information */}
                 <div className="pt-8">
@@ -57,9 +58,11 @@ const ResturantCard = ({ resturant }) => {
 
                     {/* View Menu Button */}
                     <div className="card-actions mt-5">
-                        <button className="btn w-full bg-orange-100 text-primary border-none hover:bg-primary hover:text-white font-bold">
-                            View Menu
-                        </button>
+                        <Link to={`/restaurants/${resturant._id}`} className="btn w-full bg-orange-100 text-primary border-none hover:bg-primary hover:text-white font-bold">
+                            <button>
+                                View Menu
+                            </button>
+                        </Link>
                     </div>
 
                 </div>

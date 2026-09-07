@@ -13,13 +13,18 @@ import axios from "axios";
 import Swal from "sweetalert2";
 
 const AddRestaurents = () => {
+
+
+
     const [restaurantImage, setRestaurantImage] = useState(null);
     const [restaurantImagePreview, setRestaurantImagePreview] = useState(null);
 
     const [coverImage, setCoverImage] = useState(null);
     const [coverImagePreview, setCoverImagePreview] = useState(null);
 
-    const { register, handleSubmit, control, formState: { errors } } = useForm()
+    const { register, handleSubmit, watch, formState: { errors } } = useForm()
+
+    const description = watch("description") || "";
 
     const axiosSecure = useAxiosSecure();
 
@@ -362,9 +367,14 @@ const AddRestaurents = () => {
                                 name="description"
                                 required
                                 rows="5"
+                                maxLength={200}
                                 placeholder="Enter restaurant description"
                                 className="textarea textarea-bordered w-full resize-none"
                             ></textarea>
+
+                            <p className="text-sm text-gray-500 text-right mt-1">
+                                {description.length}/200
+                            </p>
                         </div>
 
                     </div>

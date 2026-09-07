@@ -1,10 +1,13 @@
 import { FaCartShopping, FaStar } from "react-icons/fa6";
 import { Link } from "react-router";
 import { useAxiosSecure } from "../../../Hooks/useAxiosSecure";
+import useAuth from '../../../Hooks/useAuth';
 
 const FoodCard = ({ food }) => {
 
     const axiosSecure = useAxiosSecure();
+
+    const { user } = useAuth();
 
     const handleAddToCart = async (e) => {
 
@@ -13,6 +16,7 @@ const FoodCard = ({ food }) => {
 
         const cartItem = {
             foodId: food._id,
+            userEmail: user.email,
             name: food.name,
             price: food.price,
             image: food.foodPhoto,
