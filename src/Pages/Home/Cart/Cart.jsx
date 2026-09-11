@@ -96,6 +96,31 @@ const Cart = () => {
         }
     };
 
+
+    const handleCheckout = async () => {
+        try {
+            const checkoutItems = cartItems.map(item => ({
+                ...item,
+                quantity: getQuantity(item._id)
+            }));
+
+            const response = await axiosSecure.post(
+                "http://localhost:3000/create-checkout-session",
+                {
+                    cartItems: checkoutItems,
+                    userEmail: user.email
+                }
+            );
+
+            if (response.data.success) {
+                window.location.href = response.data.url;
+            }
+
+        } catch (error) {
+            console.error("Checkout Error:", error);
+        }
+    };
+
     return (
         <div className="bg-gray-50 min-h-screen py-6 sm:py-10">
 
@@ -420,7 +445,7 @@ const Cart = () => {
 
                             {/* Checkout Button */}
 
-                            <button className="btn w-full bg-primary text-white border-primary hover:bg-orange-600 mt-7 text-base sm:text-lg rounded-xl">
+                            <button onClick={handleCheckout} className="btn w-full bg-primary text-white border-primary hover:bg-orange-600 mt-7 text-base sm:text-lg rounded-xl">
 
                                 Proceed to Checkout
 
