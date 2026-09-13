@@ -9,6 +9,8 @@ import FoodDetails from "../Pages/FoodDetails/FoodDetails";
 import AddRestaurents from "../Pages/Home/AddRestaurents/AddRestaurents";
 import Cart from "../Pages/Home/Cart/Cart";
 import RestaurentsDetails from "../Pages/Home/RestaurentsDetails/RestaurentsDetails";
+import DashboardLayout from "../Layout/DashboardLayout";
+import PaymentSucces from "../Pages/Dashboard/Payment/PaymentSucces";
 
 export const router = createBrowserRouter([
     {
@@ -52,6 +54,16 @@ export const router = createBrowserRouter([
             {
                 path: 'register',
                 Component: Register
+            }
+        ]
+    },
+    {
+        path:'/dashboard',
+        Component: DashboardLayout,
+        children: [
+            {
+                path: 'payment-succes',
+                Component: PaymentSucces
             }
         ]
     }

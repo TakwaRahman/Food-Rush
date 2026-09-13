@@ -105,7 +105,7 @@ const Cart = () => {
             }));
 
             const response = await axiosSecure.post(
-                "http://localhost:3000/create-checkout-session",
+                "/create-checkout-session",
                 {
                     cartItems: checkoutItems,
                     userEmail: user.email
