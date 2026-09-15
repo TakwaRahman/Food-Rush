@@ -1,14 +1,13 @@
-import React from "react";
+
 import { FaEnvelope, FaLock, FaUser, FaPhone, FaGoogle } from "react-icons/fa";
 import { FaEye } from "react-icons/fa6";
 import { Link, useLocation, useNavigate } from "react-router";
 import Logo from "../../Component/Logo/Logo";
 import { useForm } from "react-hook-form";
-import { AuthContext } from "../../Component/context/AuthContext";
-import second from '../../Hooks/useAuth'
+
 import useAuth from "../../Hooks/useAuth";
 import { useAxiosSecure } from "../../Hooks/useAxiosSecure";
-import { auth } from "../../firebase/firebase.init";
+
 
 
 const Register = () => {
@@ -47,29 +46,26 @@ const Register = () => {
     }
 
     const handleRegister = (data) => {
-        createUser(data.email, data.pass).then(res => {
+        createUser(data.email, data.pass)
+            .then(res => {
 
-            if (data.pass === data.confirmPass) {
-
-            }
-
-            const userInfo = {
-                name: data.name,
-                email: data.email,
-                pass: data.pass,
-                phoneNumber: data.phone
-            }
-
-
-            axiosSecure.post('/users', userInfo).then(res => {
-                if (res.data.insertedId) {
-                    console.log('user created in the data')
+                const userInfo = {
+                    name: data.name,
+                    email: data.email,
+                    pass: data.pass,
+                    phoneNumber: data.phone,
+                    role: data.role
                 }
+
+                axiosSecure.post('/users', userInfo)
+                    .then(res => {
+                        if (res.data.insertedId) {
+                            console.log('user created in the data')
+                        }
+                    })
+
+                navigate(location?.state || '/')
             })
-
-            navigate(location?.state || '/')
-
-        })
             .catch(err => {
                 console.log(err)
             })
@@ -225,6 +221,55 @@ const Register = () => {
                                     />
                                     {errors.phone?.type === 'required' && <p className="text-red-500">Please enter your phone number</p>}
                                 </div>
+                            </div>
+
+                            {/* Account Type */}
+                            <div>
+                                <label className="block mb-2 font-semibold text-gray-800">
+                                    Account Type
+                                </label>
+
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+                                    <label className="flex items-center gap-3 border border-gray-300 rounded-xl p-4 cursor-pointer hover:border-orange-500">
+                                        <input
+                                            type="radio"
+                                            value="user"
+                                            {...register("role", { required: true })}
+                                            className="radio radio-warning"
+                                        />
+
+                                        <div>
+                                            <p className="font-semibold">Customer</p>
+                                            <p className="text-sm text-gray-500">
+                                                Order food from restaurants
+                                            </p>
+                                        </div>
+                                    </label>
+
+                                    <label className="flex items-center gap-3 border border-gray-300 rounded-xl p-4 cursor-pointer hover:border-orange-500">
+                                        <input
+                                            type="radio"
+                                            value="restaurant-owner"
+                                            {...register("role", { required: true })}
+                                            className="radio radio-warning"
+                                        />
+
+                                        <div>
+                                            <p className="font-semibold">Restaurant Owner</p>
+                                            <p className="text-sm text-gray-500">
+                                                Add and manage your food
+                                            </p>
+                                        </div>
+                                    </label>
+
+                                </div>
+
+                                {errors.role && (
+                                    <p className="text-red-500 text-sm mt-1">
+                                        Please select an account type
+                                    </p>
+                                )}
                             </div>
 
 

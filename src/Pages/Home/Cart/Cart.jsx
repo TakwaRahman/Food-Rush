@@ -98,28 +98,26 @@ const Cart = () => {
 
 
     const handleCheckout = async () => {
-        try {
-            const checkoutItems = cartItems.map(item => ({
-                ...item,
-                quantity: getQuantity(item._id)
-            }));
+    try {
+        const checkoutItems = cartItems.map(item => ({
+            ...item,
+            quantity: getQuantity(item._id)
+        }));
 
-            const response = await axiosSecure.post(
-                "/create-checkout-session",
-                {
-                    cartItems: checkoutItems,
-                    userEmail: user.email
-                }
-            );
-
-            if (response.data.success) {
-                window.location.href = response.data.url;
+        const response = await axiosSecure.post(
+            "/create-checkout-session",
+            {
+                cartItems: checkoutItems,
+                userEmail: user.email
             }
+        );
 
-        } catch (error) {
-            console.error("Checkout Error:", error);
-        }
-    };
+        window.location.href = response.data.url;
+
+    } catch (error) {
+        console.error("Checkout Error:", error);
+    }
+};
 
     return (
         <div className="bg-gray-50 min-h-screen py-6 sm:py-10">
